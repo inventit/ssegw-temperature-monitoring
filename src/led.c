@@ -33,7 +33,7 @@ static sse_int led_set_brightness(const sse_char *led, const sse_char *brightnes
 
   if ((fd = fopen(led, "w")) == NULL) {
     int err_no = errno;
-    SSE_LOG_ERROR(TAG, "foepn() ... failed with %s", strerror(err_no));
+    MOAT_LOG_ERROR(TAG, "foepn() ... failed with %s", strerror(err_no));
     return SSE_E_GENERIC;
   }
 
@@ -76,14 +76,14 @@ LED_teardown(void)
 void
 LED_turn_on(LED in_led)
 {
-  SSE_LOG_INFO(TAG, "Turn on: %s", g_led_path[in_led]);
+  MOAT_LOG_INFO(TAG, "Turn on: %s", g_led_path[in_led]);
   led_set_brightness(g_led_path[in_led], "255");
 }
 
 void
 LED_turn_off(LED in_led)
 {
-  SSE_LOG_INFO(TAG, "Turn off: %s", g_led_path[in_led]);
+  MOAT_LOG_INFO(TAG, "Turn off: %s", g_led_path[in_led]);
   led_set_brightness(g_led_path[in_led], "0");
 }
 

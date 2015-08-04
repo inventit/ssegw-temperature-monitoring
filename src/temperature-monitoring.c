@@ -44,10 +44,10 @@ on_key_pressed(sse_pointer in_user_data)
   SensorListener* listener = (SensorListener*)(context->sensor_listener);
 
   if (sensor->timer_id < 1) {
-    SSE_LOG_INFO(TAG, "Sensing start");
+    MOAT_LOG_INFO(TAG, "Sensing start");
     err = Sensor_subscribe(sensor, listener);
   } else {
-    SSE_LOG_INFO(TAG, "Sensing stop");
+    MOAT_LOG_INFO(TAG, "Sensing stop");
     err = Sensor_unsubscribe(sensor, listener);
   }
 
@@ -60,7 +60,7 @@ on_sensing_data(sse_int32 in_temperature, sse_pointer in_user_data)
   Context* context = (Context *)in_user_data;
   MoatObject* object;
 
-  SSE_LOG_INFO(TAG, "Temperature = %d", in_temperature);
+  MOAT_LOG_INFO(TAG, "Temperature = %d", in_temperature);
 
   object = moat_object_new();
   moat_object_add_int32_value(object, "temperature", in_temperature, sse_false);
@@ -82,27 +82,27 @@ SensingData_startstop(Moat in_moat, sse_char *in_uid, sse_char *in_key, MoatValu
 
   err = moat_value_get_string(in_data, &option, &len);
   if (err != SSE_E_OK) {
-    SSE_LOG_ERROR(TAG, "() ... failed with [%d].", err);
+    MOAT_LOG_ERROR(TAG, "() ... failed with [%d].", err);
     return err;
   }
-  SSE_LOG_INFO(TAG, "Modle:SensingData - Command:startstop [%s] is executed.", option);
+  MOAT_LOG_INFO(TAG, "Modle:SensingData - Command:startstop [%s] is executed.", option);
   
   if (sse_strcmp(option, "start") == 0) {
     if (sensor->timer_id < 1) {
-      SSE_LOG_INFO(TAG, "Sensing start");
+      MOAT_LOG_INFO(TAG, "Sensing start");
       Sensor_subscribe(sensor, listener);
     } else {
-      SSE_LOG_INFO(TAG, "Sensing is already started");
+      MOAT_LOG_INFO(TAG, "Sensing is already started");
     }
   } else if (sse_strcmp(option, "stop") == 0) {
     if (sensor->timer_id >= 1) {
-      SSE_LOG_INFO(TAG, "Sensing stop");
+      MOAT_LOG_INFO(TAG, "Sensing stop");
       Sensor_unsubscribe(sensor, listener);
     } else {
-      SSE_LOG_INFO(TAG, "Sensing is already stopped");
+      MOAT_LOG_INFO(TAG, "Sensing is already stopped");
     }
   } else {
-    SSE_LOG_ERROR(TAG, "Unknown option = [%s].", option);
+    MOAT_LOG_ERROR(TAG, "Unknown option = [%s].", option);
   }
 
   return SSE_E_OK;
@@ -116,7 +116,7 @@ moat_app_main(sse_int in_argc, sse_char *argv[])
   Context context;
   sse_int err = SSE_E_OK;
 
-  SSE_LOG_INFO(TAG, "Start.");
+  MOAT_LOG_INFO(TAG, "Start.");
 
   LED_init();
   LED_turn_off(LED1);
@@ -137,7 +137,7 @@ moat_app_main(sse_int in_argc, sse_char *argv[])
                             &model_mapper, /* ModelMapper instance */
                             &context);     /* Context */
   if (err != SSE_E_OK) {
-    SSE_LOG_ERROR(TAG, "moat_register_model() ... failed with [%d].", err);
+    MOAT_LOG_ERROR(TAG, "moat_register_model() ... failed with [%d].", err);
     goto error_exit;
   }
 
@@ -189,7 +189,7 @@ moat_app_main(sse_int in_argc, sse_char *argv[])
   moat_remove_model(moat, "SensingData");
   moat_destroy(moat);
   LED_teardown();
-  SSE_LOG_INFO(TAG, "Teardown.");
+  MOAT_LOG_INFO(TAG, "Teardown.");
   return SSE_E_OK;
 
  error_exit:

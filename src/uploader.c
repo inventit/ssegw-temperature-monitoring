@@ -27,9 +27,9 @@ static void
 Uploader_result_proc(Moat in_moat, sse_char *in_urn, sse_char *in_model_name, sse_int in_request_id, sse_int in_result, sse_pointer in_user_data)
 {
   if (in_result == SSE_E_OK) {
-    SSE_LOG_INFO(TAG, "moat_send_notificaion(id = %d) has been complated.", in_request_id);
+    MOAT_LOG_INFO(TAG, "moat_send_notificaion(id = %d) has been complated.", in_request_id);
   } else {
-    SSE_LOG_INFO(TAG, "moat_send_notificaion(id = %d) has failed with [%d].", in_request_id, in_result);
+    MOAT_LOG_INFO(TAG, "moat_send_notificaion(id = %d) has failed with [%d].", in_request_id, in_result);
   }
   LED_turn_off(LED4);
 }
@@ -51,7 +51,7 @@ Uploader_periodic_proc(MoatPeriodic *in_periodic, sse_pointer in_user_data)
 
   collection = moat_object_new();
   if (collection == NULL) {
-    SSE_LOG_ERROR(TAG, "moat_object_new() ... failed.");
+    MOAT_LOG_ERROR(TAG, "moat_object_new() ... failed.");
     return;
   }
 
@@ -61,7 +61,7 @@ Uploader_periodic_proc(MoatPeriodic *in_periodic, sse_pointer in_user_data)
 
     err = moat_object_add_object_value(collection, uuid, sensing_data, sse_false, sse_false);
     if (err != SSE_E_OK) {
-      SSE_LOG_ERROR(TAG, "moat_object_add_object_value() ... failed with [%d].", err);
+      MOAT_LOG_ERROR(TAG, "moat_object_add_object_value() ... failed with [%d].", err);
       moat_object_free(collection);
       moat_object_free(sensing_data);
       sse_free(uuid);
@@ -79,9 +79,9 @@ Uploader_periodic_proc(MoatPeriodic *in_periodic, sse_pointer in_user_data)
 				      Uploader_result_proc,
 				      this);
   if (request_id < 0) {
-    SSE_LOG_INFO(TAG, "moat_send_notificaion(id = %d) is in progress.", request_id);
+    MOAT_LOG_INFO(TAG, "moat_send_notificaion(id = %d) is in progress.", request_id);
   } else {
-    SSE_LOG_INFO(TAG, "moat_send_notificaion(id = %d) is in progress.", request_id);
+    MOAT_LOG_INFO(TAG, "moat_send_notificaion(id = %d) is in progress.", request_id);
   }
   moat_object_free(collection);
 
@@ -95,7 +95,7 @@ Uploader_new(Moat in_moat, const sse_char* in_model_name)
 
   this = sse_zeroalloc(sizeof(Uploader));
   if (this == NULL) {
-    SSE_LOG_ERROR(TAG, "sse_zeroalloc() ... failed.");
+    MOAT_LOG_ERROR(TAG, "sse_zeroalloc() ... failed.");
     goto error_exit;
   }
 
@@ -103,7 +103,7 @@ Uploader_new(Moat in_moat, const sse_char* in_model_name)
 
   this->model_name = sse_strdup(in_model_name);
   if (this->model_name == NULL) {
-    SSE_LOG_ERROR(TAG, "sse_strdup() ... failed.");
+    MOAT_LOG_ERROR(TAG, "sse_strdup() ... failed.");
     goto error_exit;
   }
 
@@ -111,13 +111,13 @@ Uploader_new(Moat in_moat, const sse_char* in_model_name)
 
   this->periodic = moat_periodic_new(Uploader_periodic_proc, this, this->interval);
   if (this->periodic == NULL) {
-    SSE_LOG_ERROR(TAG, "moat_periodic_new() ... failed.");
+    MOAT_LOG_ERROR(TAG, "moat_periodic_new() ... failed.");
     goto error_exit;
   }
 
   this->queue = sse_queue_new();
   if (this->queue == NULL) {
-    SSE_LOG_ERROR(TAG, "sse_queue_new() ... failed.");
+    MOAT_LOG_ERROR(TAG, "sse_queue_new() ... failed.");
     goto error_exit;
   }
 
@@ -152,7 +152,7 @@ Uploader_start(Uploader *in_this)
   if (!is_active) {
     err = moat_periodic_start(in_this->periodic);
     if (err != SSE_E_OK) {
-      SSE_LOG_ERROR(TAG, "moat_periodic_start() ... failed.");
+      MOAT_LOG_ERROR(TAG, "moat_periodic_start() ... failed.");
       return err;
     }
   }
@@ -179,7 +179,7 @@ Uploader_post(Uploader *in_this, MoatObject* in_object)
 
   err = sse_queue_enqueue(in_this->queue, in_object);
   if (err != SSE_E_OK) {
-    SSE_LOG_ERROR(TAG, "sse_queue_enqueue() ... failed with [%d].", err);
+    MOAT_LOG_ERROR(TAG, "sse_queue_enqueue() ... failed with [%d].", err);
     return err;
   }
   return SSE_E_OK;

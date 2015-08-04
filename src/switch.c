@@ -45,9 +45,9 @@ Switch_on_read(MoatIOWatcher *in_watcher, sse_pointer in_user_data, sse_int in_d
     if (ret != sizeof(event)) {
       if (ret < 0) {
 	sse_int err_no = errno;
-	SSE_LOG_ERROR(TAG, "read() ... failed with [%s]", strerror(err_no));
+	MOAT_LOG_ERROR(TAG, "read() ... failed with [%s]", strerror(err_no));
       } else {
-	SSE_LOG_ERROR(TAG, "read length was too short or long. [expected = %d / actual = %d]", sizeof(event), ret);
+	MOAT_LOG_ERROR(TAG, "read length was too short or long. [expected = %d / actual = %d]", sizeof(event), ret);
       } 
       return;
     }
@@ -71,27 +71,27 @@ Switch_new(const sse_char* in_event)
 
   this = sse_zeroalloc(sizeof(Switch));
   if (this == NULL) {
-    SSE_LOG_ERROR(TAG, "sse_zeroalloc() ... failed.");
+    MOAT_LOG_ERROR(TAG, "sse_zeroalloc() ... failed.");
     goto error_exit;
   }
 
   this->watcher = moat_io_watcher_new(0, NULL, this, 0);
   if (this->watcher == NULL) {
-    SSE_LOG_ERROR(TAG, "moat_io_watcher_new() ... failed.");
+    MOAT_LOG_ERROR(TAG, "moat_io_watcher_new() ... failed.");
     goto error_exit;
   }
 
   fd = open(in_event, O_RDONLY);
   if (fd < 0) {
     sse_int err_no = errno;
-    SSE_LOG_ERROR(TAG, "open() ... failed with [%s].", strerror(err_no));
+    MOAT_LOG_ERROR(TAG, "open() ... failed with [%s].", strerror(err_no));
     goto error_exit;
   }
   moat_io_watcher_set_descriptor(this->watcher, fd, MOAT_IO_FLAG_READ);
   moat_io_watcher_set_handler(this->watcher, Switch_on_read, this);
   err = moat_io_watcher_start(this->watcher);
   if (err != SSE_E_OK) {
-    SSE_LOG_ERROR(TAG, "moat_io_watcher_start() ... failed with [%d].", err);
+    MOAT_LOG_ERROR(TAG, "moat_io_watcher_start() ... failed with [%d].", err);
     close(fd);
     goto error_exit;
   }
@@ -139,7 +139,7 @@ SwitchEventListener_new(sse_uint16 in_type, sse_uint16 in_code, sse_int32 in_val
 {
   SwitchEventListener* this = sse_zeroalloc(sizeof(SwitchEventListener));
   if (this == NULL) {
-    SSE_LOG_ERROR(TAG, "sse_zeroalloc() ... failed");
+    MOAT_LOG_ERROR(TAG, "sse_zeroalloc() ... failed");
     return NULL;
   }
 

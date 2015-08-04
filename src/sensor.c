@@ -38,7 +38,7 @@ sensor_read_temperature(const sse_char *in_path, sse_int32* out_temperature)
 
   if ((fd = fopen(in_path, "r")) == NULL) {
     int err_no = errno;
-    SSE_LOG_ERROR(TAG, "foepn() ... failed with %s", strerror(err_no));
+    MOAT_LOG_ERROR(TAG, "foepn() ... failed with %s", strerror(err_no));
     return SSE_E_GENERIC;
   }
 
@@ -65,10 +65,10 @@ sensor_on_timer_event(sse_int in_timer_id, sse_pointer in_user_data)
 
   err = sensor_read_temperature(this->event_file, &temperature);
   if (err != SSE_E_OK) {
-    SSE_LOG_ERROR(TAG, "getting temperature failed.");
+    MOAT_LOG_ERROR(TAG, "getting temperature failed.");
     return sse_true;
   }
-  SSE_LOG_DEBUG(TAG, "Temperature = %d", temperature);
+  MOAT_LOG_DEBUG(TAG, "Temperature = %d", temperature);
 
   for (it = this->listeners; it != NULL; it = sse_list_next(it)) {
     listener = sse_list_data(it);
@@ -85,13 +85,13 @@ Sensor_new()
 
   Sensor* this = sse_zeroalloc(sizeof(Sensor));
   if (this == NULL) {
-    SSE_LOG_ERROR(TAG, "sse_zeroalloc() ... failed.");
+    MOAT_LOG_ERROR(TAG, "sse_zeroalloc() ... failed.");
     return NULL;
   }
 
   this->timer = moat_timer_new();
   if (this->timer == NULL) {
-    SSE_LOG_ERROR(TAG, "moat_timer_new() ... failed.");
+    MOAT_LOG_ERROR(TAG, "moat_timer_new() ... failed.");
     goto error_exit;
   }
   this->interval = SensorDefaultInterval;
@@ -103,10 +103,10 @@ Sensor_new()
     this->event_file = sse_strdup(event_file);
   }
   if (this->event_file == NULL) {
-    SSE_LOG_ERROR(TAG, "moat_timer_new() ... failed.");
+    MOAT_LOG_ERROR(TAG, "moat_timer_new() ... failed.");
     goto error_exit;
   }
-  SSE_LOG_INFO(TAG, "Event file of Sensor=[%s]", this->event_file);
+  MOAT_LOG_INFO(TAG, "Event file of Sensor=[%s]", this->event_file);
 
   return this;
 
@@ -135,7 +135,7 @@ sse_int
 Sensor_subscribe(Sensor* in_this, SensorListener* in_listener)
 {
   if (in_this->timer_id > 0) {
-    SSE_LOG_ERROR(TAG, "tiemr has already started. id = [%d]", in_this->timer_id);
+    MOAT_LOG_ERROR(TAG, "tiemr has already started. id = [%d]", in_this->timer_id);
     return SSE_E_GENERIC;
   }
 
@@ -146,7 +146,7 @@ Sensor_subscribe(Sensor* in_this, SensorListener* in_listener)
 				       sensor_on_timer_event,
 				       in_this);
     if (in_this->timer_id < 0) {
-      SSE_LOG_ERROR(TAG, "moat_timer_set() failed with [%d]", in_this->timer_id);
+      MOAT_LOG_ERROR(TAG, "moat_timer_set() failed with [%d]", in_this->timer_id);
       return SSE_E_GENERIC;
     }
   }
@@ -160,7 +160,7 @@ sse_int
 Sensor_unsubscribe(Sensor* in_this, SensorListener* in_listener)
 {
   if (in_this->timer_id < 1) {
-    SSE_LOG_ERROR(TAG, "Invalit timer id = [%d]", in_this->timer_id);
+    MOAT_LOG_ERROR(TAG, "Invalit timer id = [%d]", in_this->timer_id);
     return SSE_E_GENERIC;
   }
   
@@ -192,7 +192,7 @@ SensorListener_new(sse_pointer user_data, SensorListenerCallback callback)
 {
   SensorListener* this = sse_zeroalloc(sizeof(SensorListener));
   if (this == NULL) {
-    SSE_LOG_ERROR(TAG, "sse_zeroalloc() failed.");
+    MOAT_LOG_ERROR(TAG, "sse_zeroalloc() failed.");
     return NULL;
   }
 
