@@ -71,7 +71,7 @@ on_sensing_data(sse_int32 in_temperature, sse_pointer in_user_data)
 }
 
 sse_int
-SensingData_startstop_proc(Moat in_moat, sse_char *in_uid, sse_char *in_key, MoatValue *in_data, sse_pointer in_model_context)
+SensingData_startstop(Moat in_moat, sse_char *in_uid, sse_char *in_key, MoatValue *in_data, sse_pointer in_model_context)
 {
   sse_int err;
   sse_char* option;
@@ -85,7 +85,7 @@ SensingData_startstop_proc(Moat in_moat, sse_char *in_uid, sse_char *in_key, Moa
     MOAT_LOG_ERROR(TAG, "() ... failed with [%d].", err);
     return err;
   }
-
+  MOAT_LOG_INFO(TAG, "Modle:SensingData - Command:startstop [%s] is executed.", option);
   
   if (sse_strcmp(option, "start") == 0) {
     if (sensor->timer_id < 1) {
@@ -106,20 +106,6 @@ SensingData_startstop_proc(Moat in_moat, sse_char *in_uid, sse_char *in_key, Moa
   }
 
   return SSE_E_OK;
-}
-
-sse_int
-SensingData_startstop(Moat in_moat, sse_char *in_uid, sse_char *in_key, MoatValue *in_data, sse_pointer in_model_context)
-{
-  sse_int err;
-
-  MOAT_LOG_INFO(TAG, "Modle:SensingData - Command:startstop is executing.");
-  err =  moat_start_async_command(in_moat, in_uid, in_key, in_data, SensingData_startstop_proc, in_model_context);
-  if (err != SSE_E_OK) {
-    MOAT_LOG_ERROR(TAG, "() ... failed with [%d].", err);
-    return err;
-  }
-  return SSE_E_INPROGRESS;
 }
 
 sse_int
