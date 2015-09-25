@@ -29,6 +29,7 @@ sse_char *g_led_path[4];
 
 static sse_int led_set_brightness(const sse_char *led, const sse_char *brightness)
 {
+#if defined(PRODUCT_AG4XX)
   FILE* fd;
 
   if ((fd = fopen(led, "w")) == NULL) {
@@ -39,13 +40,16 @@ static sse_int led_set_brightness(const sse_char *led, const sse_char *brightnes
 
   fputs(brightness, fd);
   fclose(fd);
-
+#else
+  MOAT_LOG_INFO(TAG, "No LED on this device.");
+#endif
   return SSE_E_OK;
 }
 
 void
 LED_init(void)
 {
+#if defined(PRODUCT_AG4XX)
   sse_int i;
   sse_char *prefix;
 
@@ -59,11 +63,15 @@ LED_init(void)
     sprintf(buff, "%s/led%d/brightness", prefix, i + 1);
     g_led_path[i] = strdup(buff);
   }
+#else
+  MOAT_LOG_INFO(TAG, "No LED on this device.");
+#endif
 }
 
 void
 LED_teardown(void)
 {
+#if defined(PRODUCT_AG4XX)
   sse_int i;
 
   for (i = 0; i < 4; i++) {
@@ -71,19 +79,30 @@ LED_teardown(void)
       sse_free(g_led_path[i]);
     }
   }
+#else
+  MOAT_LOG_INFO(TAG, "No LED on this device.");
+#endif
 }
 
 void
 LED_turn_on(LED in_led)
 {
+#if defined(PRODUCT_AG4XX)
   MOAT_LOG_INFO(TAG, "Turn on: %s", g_led_path[in_led]);
   led_set_brightness(g_led_path[in_led], "255");
+#else
+  MOAT_LOG_INFO(TAG, "No LED on this device.");
+#endif
 }
 
 void
 LED_turn_off(LED in_led)
 {
+#if defined(PRODUCT_AG4XX)
   MOAT_LOG_INFO(TAG, "Turn off: %s", g_led_path[in_led]);
   led_set_brightness(g_led_path[in_led], "0");
+#else
+  MOAT_LOG_INFO(TAG, "No LED on this device.");
+#endif
 }
 

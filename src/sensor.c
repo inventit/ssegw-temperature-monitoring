@@ -27,7 +27,17 @@
 #define TAG "Sample:Sensor"
 
 static const sse_int SensorDefaultInterval = 10;
-static const sse_char* SensorDefaultEventFile = "/sys/devices/platform/i2c-gpio.3/i2c-adapter/i2c-3/3-0048/temp1_input";
+#if defined(PRODUCT_AG4XX)
+//static const sse_char* SensorDefaultEventFile = "/sys/devices/platform/i2c-gpio.3/i2c-adapter/i2c-3/3-0048/temp1_input"; // for Kernel 2.7
+static const sse_char* SensorDefaultEventFile = "/sys/devices/platform/i2c-gpio.3/i2c-3/3-0048/temp1_input"; // for Kernel 3.1
+#elif defined(PRODUCT_RASPI)
+static const sse_char* SensorDefaultEventFile = "/sys/class/thermal/thermal_zone0/temp";
+#elif defined(PRODUCT_OBSIOT)
+static const sse_char* SensorDefaultEventFile = "/sys/class/thermal/thermal_zone1/temp";
+#else
+#warning "No temperature was detected. Please create a dummy file - /tmp/temp or set SSEGW_SAMPLE_TEMP_SENSOR."
+static const sse_char* SensorDefaultEventFile = "/tmp/temp";
+#endif
 
 static sse_int
 sensor_read_temperature(const sse_char *in_path, sse_int32* out_temperature)
