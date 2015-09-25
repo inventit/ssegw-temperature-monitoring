@@ -23,7 +23,17 @@
       ],
       'dependencies': [
       ],
+      'conditions': [
+        ['target_product == "Armadillo-IoT"', {
+          'cflags': [ '-DPRODUCT_AG4XX' ],
+        }],
+        ['target_product == "RaspberryPi"', {
+          'cflags': [ '-DPRODUCT_RASPI' ],
+        }],
+        ['target_product == "OpenBlocks-IoT"', {
+          'cflags': [ '-DPRODUCT_OBSIOT' ],
+        }],
+      ],
     },
-
   ],
 }
