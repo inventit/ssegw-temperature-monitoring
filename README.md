@@ -175,9 +175,9 @@ First of all, rename `dot.env` to `.env` and fill in your application authentica
 $ . .env
 ```
 
-__TIPS___
+__TIPS__
 
-If Server Package and Gateway Package were deployed by PP (Platform Provider), please input PP's Application-Id instead of your Application-Id i.e. PU's ID.
+* If Server Package and Gateway Package were deployed by PP (Platform Provider), please input PP's Application-Id instead of your Application-Id i.e. PU's ID.
 
 To start monitoring, please exexute the followng command.
 ```
